@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -29,6 +30,14 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [HideInInspector] Camera cam;
     [HideInInspector] LineRenderer lr;
 
+
+    #region Bot variables
+    public bool AiCell = false;
+    [SerializeField] float timeAi = 10;
+
+
+    #endregion
+
     private void Awake()
     {
         team = tag;
@@ -40,14 +49,12 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         textMesh = GetComponentInChildren<TextMeshProUGUI>();
         startCellGain = false;
         cam = Camera.main;
-        
     }
-
     void Update()
     {
         textMesh.text = $"{number}";
         /// Timer and text
-        if (tag == "friend")
+        if (tag == "friend" || tag == "Enemy")
         {
             textMesh.text = $"{number}";
             time -= Time.deltaTime;
@@ -58,76 +65,148 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             }
         }
         ///
-        if (tag == "friend") m_SpriteRenderer.color = Color.green;
-
-        /// selections and drow lines
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        mouseDir = mousePos - gameObject.transform.position;
-        mouseDir.z = 0;
-        mouseDir = mouseDir.normalized;
-        ///
-        if (test == true)
+        if (tag == "friend")
         {
-            aim.gameObject.SetActive(true);
-            lr.enabled = true;
-            startPos = gameObject.transform.position;
-            startPos.z = 0;
-            lr.SetPosition(0, startPos);
-            endPos = mousePos;
-            endPos.z = 0;
-            lr.SetPosition(1, endPos);
+            m_SpriteRenderer.color = Color.green;
+            AiCell = false;
+        }
+        if (tag == "Enemy")
+        {
+            m_SpriteRenderer.color = Color.red;
+            AiCell = true;
+        }
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        if (AiCell == false)
+        {
+            /// selections and drow lines
+            mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            mouseDir = mousePos - gameObject.transform.position;
+            mouseDir.z = 0;
+            mouseDir = mouseDir.normalized;
+            ///
+            if (test == true)
             {
-                if (hit.collider.tag == "inert")
+                aim.gameObject.SetActive(true);
+                lr.enabled = true;
+                startPos = gameObject.transform.position;
+                startPos.z = 0;
+                lr.SetPosition(0, startPos);
+                endPos = mousePos;
+                endPos.z = 0;
+                lr.SetPosition(1, endPos);
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
-                    startCellGain = true;
-                    end_m_cell = hit.transform.position;
-                    createMcells(startCellGain, number, end_m_cell);
-                }
-                else
-                {
-                    startCellGain = false;
-                    
+                    if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy")
+                    {
+                        startCellGain = true;
+                        end_m_cell = hit.transform.position;
+                        createMcells(startCellGain, number, end_m_cell, this.transform.position);
+                    }
+                    else
+                    {
+                        startCellGain = false;
+                        GetComponent<Collider>().enabled = true;
+
+                    }
                 }
             }
+            else
+            {
+                lr.enabled = false;
+                aim.gameObject.SetActive(false);
+            }
         }
-        else
+        else if (AiCell == true)
         {
-            lr.enabled = false;
-            aim.gameObject.SetActive(false);
+            textMesh.text = $"{number}";
+            timeAi -= Time.deltaTime;
+            if (timeAi < 0)
+            {
+                AILogic();
+                timeAi += 10;
+            }
         }
     }
 
-    public void createMcells(bool start, int count,Vector3 end_m_cell)
+    public void AILogic()
+    {
+        Point_controller.Instance.AddEnemy();
+        GameObject obj_start = Point_controller.Instance.RandomEnemy();
+        GameObject obj_end = Point_controller.Instance.RandomStartPos();
+        createMcells(AiCell, number, obj_end.transform.position, obj_start.transform.position);
+    }
+
+
+    public void createMcells(bool start, int count, Vector3 end_m_cell, Vector3 startPos)
     {
         if (start == true)
         {
-            for (int i = 0; i < count/2; i++)
+            GetComponent<Collider>().enabled = false;
+            for (int i = 0; i < count / 2; i++)
             {
                 GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
                 obj.GetComponent<M_Cell>().endPos = end_m_cell;
                 obj.GetComponent<M_Cell>().team = this.tag;
+                obj.GetComponent<M_Cell>().startPos = startPos;
             }
             number -= count / 2;
         }
     }
-    
-    #region colision
+
+    #region triger
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "mCell") number--;
-        if (number<=0)
+        if (other.gameObject.tag == "friend" && tag == "inert")
+        {
+            number--;
+        }
+        if (number <= 0 && other.gameObject.tag == "friend")
         {
             tag = "friend";
-            number += 2;
+            number++;
         }
-        Debug.Log(tag);
+
+        if (other.gameObject.tag == "friend" && tag == "Enemy")
+        {
+            number--;
+        }
+        if (number <= 0 && other.gameObject.tag == "friend")
+        {
+            tag = "friend";
+            number++;
+        }
+        ///
+        if (other.gameObject.tag == "Enemy" && tag == "friend")
+        {
+            number--;
+        }
+        if (number <= 0 && other.gameObject.tag == "Enemy")
+        {
+            tag = "Enemy";
+            number++;
+        }
+
+        if (other.gameObject.tag == "Enemy" && tag == "inert")
+        {
+            number--;
+        }
+        if (number <= 0 && other.gameObject.tag == "Enemy")
+        {
+            tag = "Enemy";
+
+            number++;
+        }
+
+
+
+        Destroy(other.gameObject);
     }
 
     #endregion
+
     #region IponterInterfaces
     public void OnPointerUp(PointerEventData eventData)
     {
