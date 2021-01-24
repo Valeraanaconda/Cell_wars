@@ -8,14 +8,15 @@ using UnityEngine.UI;
 public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler
 {
     public GameObject mCell;
-    public GameObject spawnPoint;
+    public Vector3 end_m_cell;
+    public bool startCellGain;
+    //public GameObject spawnPoint;
 
-    public string team;
+    [HideInInspector] public string team;
     [HideInInspector] SpriteRenderer m_SpriteRenderer;
 
-    [HideInInspector] public bool test = false;
+    [HideInInspector] public bool test = true;
     [SerializeField] public GameObject aim;
-    [SerializeField] public GameObject cell;
     [SerializeField] public TextMeshProUGUI textMesh;
     /*[HideInInspector]*/
     public int number = 0;
@@ -27,24 +28,26 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [HideInInspector] Vector3 mouseDir;
     [HideInInspector] Camera cam;
     [HideInInspector] LineRenderer lr;
+
+    private void Awake()
+    {
+        team = tag;
+    }
     void Start()
     {
         lr = GetComponent<LineRenderer>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         textMesh = GetComponentInChildren<TextMeshProUGUI>();
+        startCellGain = false;
         cam = Camera.main;
         
-        Instantiate(mCell, transform.position, transform.rotation);
-
     }
 
     void Update()
     {
-
-
         textMesh.text = $"{number}";
         /// Timer and text
-        if (team == "friend")
+        if (tag == "friend")
         {
             textMesh.text = $"{number}";
             time -= Time.deltaTime;
@@ -55,7 +58,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             }
         }
         ///
-        if (team == "friend") m_SpriteRenderer.color = Color.green;
+        if (tag == "friend") m_SpriteRenderer.color = Color.green;
 
         /// selections and drow lines
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -80,10 +83,13 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 if (hit.collider.tag == "inert")
                 {
-                   
+                    startCellGain = true;
+                    end_m_cell = hit.transform.position;
+                    createMcells(startCellGain, number, end_m_cell);
                 }
                 else
                 {
+                    startCellGain = false;
                     
                 }
             }
@@ -93,26 +99,39 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             lr.enabled = false;
             aim.gameObject.SetActive(false);
         }
-        
-       
-
-        
     }
 
-    public void createMcells(bool start, int count)
+    public void createMcells(bool start, int count,Vector3 end_m_cell)
     {
         if (start == true)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count/2; i++)
             {
+                GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
+                obj.GetComponent<M_Cell>().endPos = end_m_cell;
+                obj.GetComponent<M_Cell>().team = this.tag;
             }
+            number -= count / 2;
         }
     }
+    
+    #region colision
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "mCell") number--;
+        if (number<=0)
+        {
+            tag = "friend";
+            number += 2;
+        }
+        Debug.Log(tag);
+    }
 
+    #endregion
     #region IponterInterfaces
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (team == "friend")
+        if (tag == "friend")
         {
             test = false;
             Point_controller.Instance.ClearCell();
@@ -122,7 +141,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (team == "friend")
+        if (tag == "friend")
         {
             test = true;
             Point_controller.Instance.AddCell(this);
@@ -132,7 +151,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (team == "friend")
+        if (tag == "friend")
         {
             test = true;
             Point_controller.Instance.AddCell(this);
