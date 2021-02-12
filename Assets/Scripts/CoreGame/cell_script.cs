@@ -11,11 +11,12 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public GameObject mCell;
     public Vector3 end_m_cell;
-    public bool startCellGain;
+    private int countM_cell;
     //public GameObject spawnPoint;
 
     [HideInInspector] public string team;
     [HideInInspector] SpriteRenderer m_SpriteRenderer;
+    RaycastHit hit;
 
     [HideInInspector] public bool test = true;
     [SerializeField] public GameObject aim;
@@ -35,8 +36,6 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     #region Bot variables
     public bool AiCell = false;
     [SerializeField] float timeAi = 10;
-
-
     #endregion
 
     private void Awake()
@@ -48,7 +47,6 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         lr = GetComponent<LineRenderer>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         textMesh = GetComponentInChildren<TextMeshProUGUI>();
-        startCellGain = false;
         cam = Camera.main;
     }
     void Update()
@@ -100,20 +98,18 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 lr.SetPosition(1, endPos);
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
                     if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy")
                     {
-                        startCellGain = true;
-                        end_m_cell = hit.transform.position;
-                        createMcells(startCellGain, number, end_m_cell, this.transform.position);
+                        
+                         Debug.Log("insude");
+                        //createMcells(number, end_m_cell, this.transform.position);
                     }
                     else
                     {
-                        startCellGain = false;
+                        countM_cell = 0;
                         GetComponent<Collider>().enabled = true;
-
                     }
                 }
             }
@@ -129,7 +125,15 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             timeAi -= Time.deltaTime;
             if (timeAi < 0)
             {
-                AILogic();
+                if (timeAi < 3)
+                {
+                    AILogic();
+                }
+                else
+                {
+                    GetComponent<Collider>().enabled = true;
+                }
+
                 timeAi += 10;
             }
         }
@@ -140,24 +144,34 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Point_controller.Instance.AddEnemy();
         GameObject obj_start = Point_controller.Instance.RandomEnemy();
         GameObject obj_end = Point_controller.Instance.RandomStartPos();
-        createMcells(AiCell, number, obj_end.transform.position, obj_start.transform.position);
+        createMcells(number, obj_end.transform.position, obj_start.transform.position);
     }
 
-
-    public void createMcells(bool start, int count, Vector3 end_m_cell, Vector3 startPos)
+    IEnumerator pointGain()
     {
-        if (start == true)
+        Debug.Log("insude in corutine " + countM_cell);
+
+        while (countM_cell != 0)
         {
             GetComponent<Collider>().enabled = false;
-            for (int i = 0; i < count / 2; i++)
-            {
-                GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
-                obj.GetComponent<M_Cell>().endPos = end_m_cell;
-                obj.GetComponent<M_Cell>().team = this.tag;
-                obj.GetComponent<M_Cell>().startPos = startPos;
-            }
-            number -= count / 2;
+            countM_cell += number / 2;
+            createMcells(number, end_m_cell, this.transform.position);
+            countM_cell--;
+            yield return new WaitForSeconds(1);
         }
+        if (countM_cell == 0) StopCoroutine(pointGain());
+
+    }
+    //this metod performs m_cells
+    public void createMcells(int count, Vector3 end_m_cell, Vector3 startPos)
+    {
+        GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
+        obj.GetComponent<M_Cell>().endPos = end_m_cell;
+        obj.GetComponent<M_Cell>().team = this.tag;
+        obj.GetComponent<M_Cell>().startPos = startPos;
+
+        number -= count / 2;
+        countM_cell += number;
     }
 
     #region triger
@@ -167,43 +181,43 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             number--;
         }
-        if (number <= 0 && other.gameObject.tag == "friend")
+        if (number <= 0 || other.gameObject.tag == "friend")
         {
             tag = "friend";
             number++;
         }
 
-        if (other.gameObject.tag == "friend" && tag == "Enemy")
-        {
-            number--;
-        }
-        if (number <= 0 && other.gameObject.tag == "friend")
-        {
-            tag = "friend";
-            Point_controller.Instance.RemEnemy(this.name);
-            number++;
-        }
-        ///
-        if (other.gameObject.tag == "Enemy" && tag == "friend")
-        {
-            number--;
-        }
-        if (number <= 0 && other.gameObject.tag == "Enemy")
-        {
-            tag = "Enemy";
-            number++;
-        }
+        //if (other.gameObject.tag == "friend" && tag == "Enemy")
+        //{
+        //    number--;
+        //}
+        //if (number <= 0 && other.gameObject.tag == "friend")
+        //{
+        //    tag = "friend";
+        //    Point_controller.Instance.RemEnemy(this.name);
+        //    number++;
+        //}
+        /////
+        //if (other.gameObject.tag == "Enemy" && tag == "friend")
+        //{
+        //    number--;
+        //}
+        //if (number <= 0 && other.gameObject.tag == "Enemy")
+        //{
+        //    tag = "Enemy";
+        //    number++;
+        //}
 
-        if (other.gameObject.tag == "Enemy" && tag == "inert")
-        {
-            number--;
-        }
-        if (number <= 0 && other.gameObject.tag == "Enemy")
-        {
-            tag = "Enemy";
+        //if (other.gameObject.tag == "Enemy" && tag == "inert")
+        //{
+        //    number--;
+        //}
+        //if (number <= 0 && other.gameObject.tag == "Enemy")
+        //{
+        //    tag = "Enemy";
 
-            number++;
-        }
+        //    number++;
+        //}
 
 
 
@@ -215,12 +229,18 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     #region IponterInterfaces
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (tag == "friend")
-        {
+      
             test = false;
-            Point_controller.Instance.ClearCell();
-        }
+            if (hit.collider.tag == "inert")
+            {
+                end_m_cell = hit.transform.position;
+                countM_cell += number / 2;
+                StartCoroutine(pointGain());
 
+            }
+        Point_controller.Instance.ClearCell();
+
+        test = false;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -240,6 +260,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             test = true;
             Point_controller.Instance.AddCell(this);
         }
+
 
     }
 
