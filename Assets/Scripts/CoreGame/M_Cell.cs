@@ -9,6 +9,7 @@ public class M_Cell : MonoBehaviour
     public Vector3 endPos;
     public float step;
     public float progress;
+    public int count;
     public SpriteRenderer m_SpriteRenderer;
 
 
@@ -25,7 +26,13 @@ public class M_Cell : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (team == "friend") m_SpriteRenderer.color = Color.green;
+        if (team == "friend")
+        {
+            var particle = GetComponentInChildren<ParticleSystem>();
+            particle.startColor = Color.green;
+            particle.maxParticles = count;
+
+        }
         if (team == "Enemy") m_SpriteRenderer.color = Color.red;
         tag = team;
 

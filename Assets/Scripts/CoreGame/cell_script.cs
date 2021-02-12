@@ -98,17 +98,12 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 lr.SetPosition(1, endPos);
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
-                    if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy")
-                    {
-                        
-                         Debug.Log("insude");
-                        //createMcells(number, end_m_cell, this.transform.position);
-                    }
+                    if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy");
                     else
                     {
-                        countM_cell = 0;
                         GetComponent<Collider>().enabled = true;
                     }
                 }
@@ -147,79 +142,34 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         createMcells(number, obj_end.transform.position, obj_start.transform.position);
     }
 
-    IEnumerator pointGain()
-    {
-        Debug.Log("insude in corutine " + countM_cell);
 
-        while (countM_cell != 0)
-        {
-            GetComponent<Collider>().enabled = false;
-            countM_cell += number / 2;
-            createMcells(number, end_m_cell, this.transform.position);
-            countM_cell--;
-            yield return new WaitForSeconds(1);
-        }
-        if (countM_cell == 0) StopCoroutine(pointGain());
 
-    }
     //this metod performs m_cells
     public void createMcells(int count, Vector3 end_m_cell, Vector3 startPos)
     {
         GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
+        obj.GetComponent<M_Cell>().count = count;
         obj.GetComponent<M_Cell>().endPos = end_m_cell;
         obj.GetComponent<M_Cell>().team = this.tag;
         obj.GetComponent<M_Cell>().startPos = startPos;
-
-        number -= count / 2;
-        countM_cell += number;
     }
 
     #region triger
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.gameObject.tag == "friend" && tag == "inert")
         {
-            number--;
+            GameObject obj = other.gameObject;
+            int res = number - obj.GetComponent<M_Cell>().count;
+            if (res <= 0)
+            {
+                number = (res * -1);
+                tag = "friend";
+            }
+            else number -= obj.GetComponent<M_Cell>().count;
+
         }
-        if (number <= 0 || other.gameObject.tag == "friend")
-        {
-            tag = "friend";
-            number++;
-        }
-
-        //if (other.gameObject.tag == "friend" && tag == "Enemy")
-        //{
-        //    number--;
-        //}
-        //if (number <= 0 && other.gameObject.tag == "friend")
-        //{
-        //    tag = "friend";
-        //    Point_controller.Instance.RemEnemy(this.name);
-        //    number++;
-        //}
-        /////
-        //if (other.gameObject.tag == "Enemy" && tag == "friend")
-        //{
-        //    number--;
-        //}
-        //if (number <= 0 && other.gameObject.tag == "Enemy")
-        //{
-        //    tag = "Enemy";
-        //    number++;
-        //}
-
-        //if (other.gameObject.tag == "Enemy" && tag == "inert")
-        //{
-        //    number--;
-        //}
-        //if (number <= 0 && other.gameObject.tag == "Enemy")
-        //{
-        //    tag = "Enemy";
-
-        //    number++;
-        //}
-
-
 
         Destroy(other.gameObject);
     }
@@ -229,17 +179,18 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     #region IponterInterfaces
     public void OnPointerUp(PointerEventData eventData)
     {
-      
-            test = false;
-            if (hit.collider.tag == "inert")
-            {
-                end_m_cell = hit.transform.position;
-                countM_cell += number / 2;
-                StartCoroutine(pointGain());
 
-            }
+        test = false;
+        if (hit.collider.tag == "inert" && number > 1)
+        {
+            end_m_cell = hit.transform.position;
+            countM_cell += number / 2;
+            number = countM_cell;
+            GetComponent<Collider>().enabled = false;
+            createMcells(number, end_m_cell, this.transform.position);
+            countM_cell = 0;
+        }
         Point_controller.Instance.ClearCell();
-
         test = false;
     }
 
@@ -250,7 +201,6 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             test = true;
             Point_controller.Instance.AddCell(this);
         }
-
     }
 
     public void OnPointerEnter(PointerEventData eventData)
