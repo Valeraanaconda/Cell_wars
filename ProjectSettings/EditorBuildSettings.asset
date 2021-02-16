@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/levl_3.unity
     guid: ee0c89535a615244f94b617b60eb216c
+  - enabled: 1
+    path: Assets/Scenes/labaratory.unity
+    guid: 669a354a79914ce4d83b1dabebaf74cf
   m_configObjects: {}

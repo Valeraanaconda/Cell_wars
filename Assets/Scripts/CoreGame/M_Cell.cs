@@ -7,7 +7,7 @@ public class M_Cell : MonoBehaviour
     public string team;
     public Vector3 startPos;
     public Vector3 endPos;
-    public float step;
+    public float step; // boost
     public float progress;
     public int count;
     public SpriteRenderer m_SpriteRenderer;
@@ -18,6 +18,11 @@ public class M_Cell : MonoBehaviour
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         GetComponent<Collider>().enabled = false;
+        if (Global_variables.boost_speed == 1) step = 0.001f;
+        if (Global_variables.boost_speed == 2) step = 0.0015f;
+        if (Global_variables.boost_speed == 3) step = 0.0016f;
+        if (Global_variables.boost_speed == 4) step = 0.0017f;
+        if (Global_variables.boost_speed == 5) step = 0.0018f;
         step = 0.0095f;
 
     }

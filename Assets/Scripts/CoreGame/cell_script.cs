@@ -31,7 +31,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] public TextMeshProUGUI textMesh;
     /*[HideInInspector]*/
     public int number = 0;
-    [SerializeField] float time = 3;
+    [SerializeField] float time = 5; //boost
     //Drow Line variables
     [HideInInspector] Vector3 startPos;
     [HideInInspector] Vector3 endPos;
@@ -49,6 +49,11 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void Awake()
     {
         team = tag;
+        if (Global_variables.boost_spawn_speed == 1) time = 4.75f;
+        if (Global_variables.boost_spawn_speed == 2) time = 4.25f;
+        if (Global_variables.boost_spawn_speed == 3) time = 4.0f;
+        if (Global_variables.boost_spawn_speed == 4) time = 3.75f;
+        if (Global_variables.boost_spawn_speed == 5) time = 2.75f;
     }
     void Start()
     {
