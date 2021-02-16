@@ -17,10 +17,10 @@ public class M_Cell : MonoBehaviour
     private void Awake()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
-      
-        step = 0.01f;
+        GetComponent<Collider>().enabled = false;
+        step = 0.0095f;
 
-    } 
+    }
 
 
     // Update is called once per frame
@@ -33,12 +33,23 @@ public class M_Cell : MonoBehaviour
             particle.maxParticles = count;
 
         }
-        if (team == "Enemy") m_SpriteRenderer.color = Color.red;
+        if (team == "Enemy")
+        {
+            var particle = GetComponentInChildren<ParticleSystem>();
+            particle.startColor = Color.red;
+            particle.maxParticles = count;
+
+        }
         tag = team;
 
-        transform.position = Vector2.Lerp(startPos,endPos,progress);
+        transform.position = Vector2.Lerp(startPos, endPos, progress);
         progress += step;
+        StartCoroutine(colideron());
 
     }
+    IEnumerator colideron()
+    {
+        yield return new WaitForSeconds(1);
+        GetComponent<Collider>().enabled = true;
+    }
 }
- 
