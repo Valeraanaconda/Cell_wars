@@ -52,12 +52,16 @@ public class Point_controller : Singleton<Point_controller>
     }
     public GameObject RandomEndPos()
     {
-        int count_iner=0;
+        int count_iner = 0;
+        int count_enm = 0;
+
         foreach (var i in AllCell)
         {
             if (i.tag == "inert") count_iner++;
+            if (i.tag == "Enemy") count_enm++;
         }
-        if(count_iner == 0) return AllCell[Random.Range(0, FriendList.Count)];
+        if (count_iner == 0) return AllCell[Random.Range(0, FriendList.Count)];
+        if (count_enm == 1) return AllCell[Random.Range(1, AllCell.Count)];
 
         return AllCell[Random.Range(0, AllCell.Count)];
     }

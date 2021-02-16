@@ -11,6 +11,8 @@ public class Buttons : MonoBehaviour
     public void GoToLevel(int level)
     {
         SceneManager.LoadScene(level);
+        Time.timeScale = 1;
+
     }
     public void Exit() => Application.Quit();
     public void ReloadLevl(int level)

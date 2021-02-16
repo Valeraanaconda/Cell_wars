@@ -9,6 +9,18 @@ EditorBuildSettings:
     path: Assets/Scenes/menu.unity
     guid: 45a50a74f9fc3964aa21ad23ff990dc0
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Traning_level.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/level_map.unity
+    guid: 3423925caa35ac947906147ce6b071fd
+  - enabled: 1
+    path: Assets/Scenes/levl_1.unity
+    guid: 704fc8ae2a01670428c0eb1ec7d7d436
+  - enabled: 1
+    path: Assets/Scenes/levl_2.unity
+    guid: c5c999ebaca4c814ca6e6ac7dd6e92eb
+  - enabled: 1
+    path: Assets/Scenes/levl_3.unity
+    guid: ee0c89535a615244f94b617b60eb216c
   m_configObjects: {}

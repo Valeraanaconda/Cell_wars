@@ -3049,7 +3049,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3194,7 +3194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WinSprite: {fileID: 872520478}
-  LoseSprite: {fileID: 0}
+  LoseSprite: {fileID: 1858319091}
   score: 0
   score_UI: {fileID: 1092876566}
   mCell: {fileID: 4951817490062929661, guid: 6bc156cdc5356044b8d8142bc71d8327, type: 3}
@@ -3202,7 +3202,7 @@ MonoBehaviour:
   team: 
   test: 0
   aim: {fileID: 8661277}
-  textMesh: {fileID: 0}
+  textMesh: {fileID: 1092876566}
   number: 50
   time: 3
   AiCell: 0
@@ -4083,7 +4083,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WinSprite: {fileID: 872520478}
-  LoseSprite: {fileID: 0}
+  LoseSprite: {fileID: 1858319091}
   score: 0
   score_UI: {fileID: 1092876566}
   mCell: {fileID: 4951817490062929661, guid: 6bc156cdc5356044b8d8142bc71d8327, type: 3}
@@ -4091,7 +4091,7 @@ MonoBehaviour:
   team: 
   test: 0
   aim: {fileID: 1486554071}
-  textMesh: {fileID: 0}
+  textMesh: {fileID: 1092876566}
   number: 10
   time: 3
   AiCell: 0
