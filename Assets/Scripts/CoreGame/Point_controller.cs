@@ -13,17 +13,8 @@ public class Point_controller : Singleton<Point_controller>
 
 
 
-    public void AddFriend()
-    {
-        for (int i = 0; i < AllCell.Count; i++)
-        {
-            if (AllCell[i].tag == "friend")
-            {
-                FriendList.Add(AllCell[i]);
-                break;
-            }
-        }
-    }
+    public void AddFriend(GameObject obj) => FriendList.Add(obj);
+    
     public void Remfriend(string cell_name)
     {
         for (int i = 0; i < FriendList.Count; i++)
@@ -31,17 +22,8 @@ public class Point_controller : Singleton<Point_controller>
             if (FriendList[i].name == cell_name) FriendList.Remove(FriendList[i]);
         }
     }
-    public void AddEnemy()
-    {
-        for (int i = 0; i < AllCell.Count; i++)
-        {
-            if (AllCell[i].tag == "Enemy")
-            {
-                EnemyList.Add(AllCell[i]);
-                break;
-            }
-        }
-    }
+    public void AddEnemy(GameObject obj) => EnemyList.Add(obj);
+   
 
     public void RemEnemy(string cell_name)
     {

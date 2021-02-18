@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4951817490062929661}
   m_LocalRotation: {x: -0, y: -0, z: 0.2962629, w: 0.95510644}
-  m_LocalPosition: {x: -7.2825575, y: -3.1950676, z: 0}
+  m_LocalPosition: {x: -7.425, y: -2.979, z: 0}
   m_LocalScale: {x: 0.16147073, y: 0.16058531, z: 0.9769593}
   m_Children: []
   m_Father: {fileID: 0}
@@ -106,6 +106,7 @@ MonoBehaviour:
   progress: 0
   count: 0
   m_SpriteRenderer: {fileID: 0}
+  transform_end: {fileID: 0}
 --- !u!135 &56699475903891540
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -118,7 +119,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.08
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: -1.17, y: 2.33, z: 0}
 --- !u!198 &440746864962640675
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -128,7 +129,7 @@ ParticleSystem:
   m_GameObject: {fileID: 4951817490062929661}
   serializedVersion: 7
   lengthInSec: 1
-  simulationSpeed: 1
+  simulationSpeed: 0.92
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
@@ -686,8 +687,8 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    randomizeRotationDirection: 0
-    maxNumParticles: 30
+    randomizeRotationDirection: 1
+    maxNumParticles: 15
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -1448,8 +1449,8 @@ ParticleSystem:
         m_NumAlphaKeys: 2
   UVModule:
     serializedVersion: 2
-    enabled: 0
-    mode: 0
+    enabled: 1
+    mode: 1
     timeMode: 0
     fps: 30
     frameOverTime:
@@ -1567,7 +1568,7 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: 0}
+    - sprite: {fileID: 21300000, guid: ae88a56cf320b70449eb79b359091ae3, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:
@@ -4845,7 +4846,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

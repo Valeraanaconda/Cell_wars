@@ -18,6 +18,8 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     ///
     public GameObject mCell;
+    public GameObject mCell_enemy;
+
     public Vector3 end_m_cell;
     private int countM_cell;
     //public GameObject spawnPoint;
@@ -146,19 +148,33 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         countM_cell += number / 2;
         number = countM_cell;
         countM_cell = 0;
-        createMcells(number, obj_end.transform.position, obj_start.transform.position);
+        createMcells(number, obj_end.transform.position, obj_start.transform.position, obj_end.transform);
     }
 
 
 
     //this metod performs m_cells
-    public void createMcells(int count, Vector3 end_m_cell, Vector3 startPos)
+    public void createMcells(int count, Vector3 end_m_cell, Vector3 startPos, Transform end_lock)
     {
+        if (tag == "friend")
+        {
         GameObject obj = Instantiate(mCell, transform.position, Quaternion.identity);
         obj.GetComponent<M_Cell>().count = count;
         obj.GetComponent<M_Cell>().endPos = end_m_cell;
         obj.GetComponent<M_Cell>().team = this.tag;
+        obj.GetComponent<M_Cell>().transform_end = end_lock;
         obj.GetComponent<M_Cell>().startPos = startPos;
+        }
+        if (tag == "Enemy")
+        {
+            GameObject obj = Instantiate(mCell_enemy, transform.position, Quaternion.identity);
+            obj.GetComponent<M_Cell>().count = count;
+            obj.GetComponent<M_Cell>().endPos = end_m_cell;
+            obj.GetComponent<M_Cell>().team = this.tag;
+            obj.GetComponent<M_Cell>().transform_end = end_lock;
+            obj.GetComponent<M_Cell>().startPos = startPos;
+
+        }
     }
 
     #region trigers
@@ -169,13 +185,13 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         // inert point capture logic parent friend
         if (other.gameObject.tag == "friend" && tag == "inert")
         {
-            score++;
             int res = number - obj.GetComponent<M_Cell>().count;
             if (res <= 0)
             {
                 number = (res * -1);
                 tag = "friend";
-                Point_controller.Instance.AddFriend();
+                GameObject transf = Point_controller.Instance.AllCell.Find(x => x.gameObject.name.Equals(this.name));
+                Point_controller.Instance.AddFriend(transf);
             }
             else number -= obj.GetComponent<M_Cell>().count;
             t = false;
@@ -188,7 +204,9 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 number = (res * -1);
                 tag = "Enemy";
-                Point_controller.Instance.AddEnemy();
+                GameObject transf = Point_controller.Instance.AllCell.Find(x => x.gameObject.name.Equals(this.name));
+                Point_controller.Instance.AddEnemy(transf);
+
             }
             else number -= obj.GetComponent<M_Cell>().count;
             t = false;
@@ -202,7 +220,8 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 Point_controller.Instance.Remfriend(name);
                 number = (res * -1);
                 tag = "Enemy";
-                Point_controller.Instance.AddEnemy();
+                GameObject transf = Point_controller.Instance.AllCell.Find(x => x.gameObject.name.Equals(this.name));
+                Point_controller.Instance.AddEnemy(transf);
                 if (Point_controller.Instance.FriendList.Count == 0)
                 {
                     //lose
@@ -218,17 +237,18 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             int res = number - obj.GetComponent<M_Cell>().count;
             if (res <= 0)
             {
-                score++;
-
                 Point_controller.Instance.RemEnemy(name);
                 number = (res * -1);
                 tag = "friend";
-                Point_controller.Instance.AddFriend();
+                GameObject transf = Point_controller.Instance.AllCell.Find(x => x.gameObject.name.Equals(this.name));
+                Point_controller.Instance.AddFriend(transf);
                 if (Point_controller.Instance.EnemyList.Count == 0)
                 {
                     //win
+                    score_UI.text = $"{Global_variables.score_level}";
                     Time.timeScale = 0;
                     WinSprite.gameObject.SetActive(true);
+                    score_UI.text = $"{score}";
                 }
 
             }
@@ -242,7 +262,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             number += obj.GetComponent<M_Cell>().count;
         }
 
-        score_UI.text = $"{score}";
+        score_UI.text = $"{Global_variables.score_level}";
         Destroy(other.gameObject);
     }
     #endregion
@@ -250,6 +270,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     #region IponterInterfaces
     public void OnPointerUp(PointerEventData eventData)
     {
+        Global_variables.score_level++;
         test = false;
         if (hit.collider.tag == "inert" && number > 1 || hit.collider.tag == "Enemy" || hit.collider.tag == "friend")
         {
@@ -257,9 +278,10 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             end_m_cell = hit.transform.position;
             countM_cell += number / 2;
             number = countM_cell;
-            createMcells(number, end_m_cell, this.transform.position);
+            createMcells(number, end_m_cell, this.transform.position,hit.transform);
             countM_cell = 0;
             Point_controller.Instance.ClearCell();
+
         }
     }
 

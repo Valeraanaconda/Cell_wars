@@ -8,12 +8,52 @@ public class labaratory_UI : MonoBehaviour
     public TextMeshProUGUI spawn_speed;
     public TextMeshProUGUI speed;
 
+    public TextMeshProUGUI money_1;
+    public TextMeshProUGUI money_2;
+
 
     // Update is called once per frame
     void Update()
     {
         spawn_speed.text = $"spawn speed: {Global_variables.boost_spawn_speed}";
         speed.text = $"speed: {Global_variables.boost_speed}";
+        switch (Global_variables.boost_speed)
+        {
+            case 1:
+                money_1.text = "200";
+                break;
+            case 2:
+                money_1.text = "400";
+                break;
+            case 3:
+                money_1.text = "800";
+                break;
+            case 4:
+                money_1.text = "1600";
+                break;
+            case 5:
+                money_1.text = "MAX level";
+                break;
+        }
+        switch (Global_variables.boost_spawn_speed)
+        {
+            case 1:
+                money_2.text = "200";
+                break;
+            case 2:
+                money_2.text = "400";
+                break;
+            case 3:
+                money_2.text = "800";
+                break;
+            case 4:
+                money_2.text = "1600";
+                break;
+            case 5:
+                money_2.text = "MAX level";
+                break;
+        }
+
 
     }
 }
