@@ -50,6 +50,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void Awake()
     {
+        Global_variables.score_level = 0;
         team = tag;
         if (Global_variables.boost_spawn_speed == 1) time = 4.75f;
         if (Global_variables.boost_spawn_speed == 2) time = 4.25f;
@@ -113,7 +114,7 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
-                    if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy") ;
+                    if (hit.collider.tag == "inert" || hit.collider.tag == "Enemy");
                     else
                     {
                         GetComponent<Collider>().enabled = true;
@@ -281,7 +282,6 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             createMcells(number, end_m_cell, this.transform.position,hit.transform);
             countM_cell = 0;
             Point_controller.Instance.ClearCell();
-
         }
     }
 
