@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class labaratory_UI : MonoBehaviour
 {
+    public TextMeshProUGUI gl_money;
+
     public TextMeshProUGUI spawn_speed;
     public TextMeshProUGUI speed;
 
@@ -15,6 +17,8 @@ public class labaratory_UI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        gl_money.text = $"money: {Global_variables.money}";
+
         spawn_speed.text = $"spawn speed: {Global_variables.boost_spawn_speed}";
         speed.text = $"speed: {Global_variables.boost_speed}";
         switch (Global_variables.boost_speed)

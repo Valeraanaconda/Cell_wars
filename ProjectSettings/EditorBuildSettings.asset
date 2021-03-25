@@ -26,4 +26,25 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/labaratory.unity
     guid: 669a354a79914ce4d83b1dabebaf74cf
+  - enabled: 1
+    path: Assets/Scenes/levl_4.unity
+    guid: 521db7420bc601d439b81bf728519d42
+  - enabled: 1
+    path: Assets/Scenes/levl_5.unity
+    guid: 42ec0c7c566c90642be1b0d5d495589a
+  - enabled: 1
+    path: Assets/Scenes/levl_6.unity
+    guid: dc526ea3eb8e7514b84b556b3fd0438d
+  - enabled: 1
+    path: Assets/Scenes/levl_7.unity
+    guid: 6663d27343a4fa8489fd29d6a321518a
+  - enabled: 1
+    path: Assets/Scenes/levl_8.unity
+    guid: d0acc80a513bdab4b9946d33cce49dfb
+  - enabled: 1
+    path: Assets/Scenes/levl_9.unity
+    guid: 94d6fbef7c56f8d4d83ef256357d1655
+  - enabled: 1
+    path: Assets/Scenes/levl_10.unity
+    guid: 4e32583ddf3dc6f42b2e6bb5c2c76d0f
   m_configObjects: {}

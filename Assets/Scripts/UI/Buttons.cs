@@ -6,11 +6,12 @@ using UnityEngine;
 
 public class Buttons : MonoBehaviour
 {
+
     private void Start()
     {
         if (Advertisement.isSupported)
         {
-            Advertisement.Initialize("4015611",false);
+            Advertisement.Initialize("4015611", false);
         }
     }
     public void GoToLevel(int level)
@@ -28,12 +29,16 @@ public class Buttons : MonoBehaviour
 
     public void AddImprovement(int number_improvment)
     {
-        if (number_improvment == 1 && Global_variables.boost_spawn_speed<5)
+        GameObject lab = GameObject.Find("Menu_logic");
+
+        if (number_improvment == 1 && Global_variables.boost_spawn_speed < 5 && Global_variables.money >= int.Parse(lab.GetComponent<labaratory_UI>().money_2.text))
         {
+            Global_variables.money -= int.Parse(lab.GetComponent<labaratory_UI>().money_2.text);
             Global_variables.boost_spawn_speed++;
         }
-        if (number_improvment == 2 && Global_variables.boost_speed < 5)
+        if (number_improvment == 2 && Global_variables.boost_speed < 5 && Global_variables.money >= int.Parse(lab.GetComponent<labaratory_UI>().money_1.text))
         {
+            Global_variables.money -= int.Parse(lab.GetComponent<labaratory_UI>().money_1.text);
             Global_variables.boost_speed++;
         }
     }

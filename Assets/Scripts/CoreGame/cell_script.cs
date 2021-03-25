@@ -284,8 +284,6 @@ public class cell_script : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Point_controller.Instance.ClearCell();
         }
     }
-
-
     public void OnPointerDown(PointerEventData eventData)
     {
         if (tag == "friend")
